@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.insider</groupId>
+    <artifactId>insider-qa-automation-sddk-gkts</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>INSIDER_QA_AUTOMATION_SDDK_GKTS</name>
+    <description>Cucumber BDD + Selenium + REST Assured Test Automation Framework</description>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <selenium.version>4.15.0</selenium.version>
+        <cucumber.version>7.14.0</cucumber.version>
+        <testng.version>7.10.2</testng.version>
+        <rest-assured.version>5.4.0</rest-assured.version>
+        <assertj.version>3.25.1</assertj.version>
+        <slf4j.version>2.0.11</slf4j.version>
+        <logback.version>1.4.14</logback.version>
+        <webdrivermanager.version>5.6.3</webdrivermanager.version>
+        <allure.version>2.25.0</allure.version>
+        <jackson.version>2.16.1</jackson.version>
+        <lombok.version>1.18.30</lombok.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-bom</artifactId>
+                <version>${selenium.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.cucumber</groupId>
+                <artifactId>cucumber-bom</artifactId>
+                <version>${cucumber.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <!-- ═══════════════════════════════════════
+             SELENIUM
+        ════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>${webdrivermanager.version}</version>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════
+             CUCUMBER  — TestNG runner only
+             (cucumber-junit-platform-engine is intentionally
+              excluded to prevent Surefire from picking up
+              the JUnit Platform provider instead of TestNG)
+        ════════════════════════════════════════ -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════
+             TESTNG  — primary test runner
+        ════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════
+             REST ASSURED
+        ════════════════════════════════════════ -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════
+             ASSERTIONS
+        ════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════
+             JSON (Jackson)
+        ════════════════════════════════════════ -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════
+             LOGGING
+        ════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════
+             ALLURE REPORTING
+        ════════════════════════════════════════ -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-cucumber7-jvm</artifactId>
+            <version>${allure.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>${allure.version}</version>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════
+             UTILITIES
+        ════════════════════════════════════════ -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.15.1</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- ─── Compiler ──────────────────────────────────── -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- ─── Clean Allure Results before tests ──────────── -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>clean-allure-results</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete dir="${project.basedir}/allure-results" quiet="true"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- ─── Surefire — forced to use TestNG provider ─── -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <!--
+                        suiteXmlFiles forces Surefire to use TestNG provider
+                        regardless of what else is on the classpath.
+                        CucumberTestRunner (extends AbstractTestNGCucumberTests)
+                        is registered inside testng.xml.
+                    -->
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <!-- Pass through any tag filter supplied on the command line -->
+                    <systemPropertyVariables>
+                        <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
+                    </systemPropertyVariables>
+                    <!--
+                        Allow the build to continue to the allure-generate step
+                        even when tests fail — the report must always reflect
+                        the latest run. Build still exits non-zero via the
+                        MojoFailureException Surefire re-throws after test phase.
+                    -->
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+                <!-- Explicitly pull in TestNG provider so there is no ambiguity -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-testng</artifactId>
+                        <version>3.2.2</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <!-- ─── Open Allure Report after tests ─────────────── -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <!-- Step 1: generate static HTML from allure-results -->
+                    <execution>
+                        <id>allure-generate</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>allure</executable>
+                            <arguments>
+                                <argument>generate</argument>
+                                <argument>${project.basedir}/allure-results</argument>
+                                <argument>-o</argument>
+                                <argument>${project.basedir}/allure-report</argument>
+                                <argument>--clean</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <!-- Step 2: serve and open browser (skipped in CI) -->
+                    <execution>
+                        <id>allure-open</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>sh</executable>
+                            <arguments>
+                                <argument>-c</argument>
+                                <argument>[ -z "$CI" ] &amp;&amp; { lsof -ti:8090 | xargs kill -9 2>/dev/null; python3 -m http.server 8090 --directory '${project.basedir}/allure-report' &amp; sleep 2 &amp;&amp; open http://localhost:8090; }; exit 0</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- ─── Allure ────────────────────────────────────── -->
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.13.0</version>
+                <configuration>
+                    <reportVersion>2.25.0</reportVersion>
+                </configuration>
+            </plugin>
+
+            <!-- ─── Cucumber HTML Report ──────────────────────── -->
+            <!--
+                Phase = verify  →  runs after Surefire (test phase)
+                so cucumber.json already exists when this executes.
+            -->
+            <plugin>
+                <groupId>net.masterthought</groupId>
+                <artifactId>maven-cucumber-reporting</artifactId>
+                <version>5.7.0</version>
+                <executions>
+                    <execution>
+                        <id>cucumber-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <projectName>Insider QA Automation - BDD</projectName>
+                            <outputDirectory>target/cucumber-reports</outputDirectory>
+                            <inputDirectory>target/cucumber-reports</inputDirectory>
+                            <jsonFiles>
+                                <jsonFile>target/cucumber-reports/cucumber.json</jsonFile>
+                            </jsonFiles>
+                            <!-- Don't crash if json is absent (e.g. compile-only run) -->
+                            <checkBuildResult>false</checkBuildResult>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>load-test</id>
+            <build>
+                <plugins>
+                    <!-- JMeter load test runner -->
+                    <plugin>
+                        <groupId>com.lazerycode.jmeter</groupId>
+                        <artifactId>jmeter-maven-plugin</artifactId>
+                        <version>3.7.0</version>
+                        <executions>
+                            <execution>
+                                <id>configuration</id>
+                                <goals>
+                                    <goal>configure</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>jmeter-tests</id>
+                                <goals>
+                                    <goal>jmeter</goal>
+                                    <goal>results</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <testFilesDirectory>${project.basedir}/load-tests</testFilesDirectory>
+                            <resultsDirectory>${project.basedir}/load-tests/results</resultsDirectory>
+                            <generateReports>true</generateReports>
+                            <reportDirectory>${project.basedir}/load-tests/html-report</reportDirectory>
+                            <ignoreResultFailures>true</ignoreResultFailures>
+                        </configuration>
+                    </plugin>
+
+                    <!-- Open HTML report after load tests -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.1</version>
+                        <executions>
+                            <execution>
+                                <id>open-load-report</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>open</executable>
+                                    <arguments>
+                                        <argument>${project.basedir}/load-tests/html-report/index.html</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

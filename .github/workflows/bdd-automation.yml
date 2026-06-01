@@ -1,0 +1,233 @@
+name: BDD Test Automation - Cucumber
+
+on:
+  schedule:
+    - cron: '0 4 * * *'   # UTC 04:00 AM daily
+  workflow_dispatch:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  JAVA_VERSION: '11'
+  ALLURE_VERSION: '2.25.0'
+
+jobs:
+  # ============================================================
+  # UI Tests Job
+  # ============================================================
+  ui-tests:
+    name: UI Tests - Selenium + Cucumber
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Install Allure CLI
+        run: |
+          curl -sLo allure.tgz https://github.com/allure-framework/allure2/releases/download/${{ env.ALLURE_VERSION }}/allure-${{ env.ALLURE_VERSION }}.tgz
+          tar -xzf allure.tgz -C $HOME
+          mv $HOME/allure-${{ env.ALLURE_VERSION }} $HOME/allure
+          echo "$HOME/allure/bin" >> $GITHUB_PATH
+
+      - name: Install Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          google-chrome --version
+
+      - name: Run UI Tests
+        run: |
+          mvn test \
+            -Dcucumber.filter.tags="@ui and not @skip" \
+            -Dbrowser.type=CHROME \
+            -Dbrowser.headless=true \
+            -Denvironment=STAGING \
+            -Dorg.slf4j.simpleLogger.defaultLogLevel=INFO \
+            -B
+        continue-on-error: true
+
+      - name: Upload UI Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-test-reports
+          path: |
+            allure-report/
+            target/cucumber-reports/
+            target/logs/
+            target/screenshots/
+          retention-days: 30
+
+  # ============================================================
+  # API Tests Job
+  # ============================================================
+  api-tests:
+    name: API Tests - REST Assured + Cucumber
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Install Allure CLI
+        run: |
+          curl -sLo allure.tgz https://github.com/allure-framework/allure2/releases/download/${{ env.ALLURE_VERSION }}/allure-${{ env.ALLURE_VERSION }}.tgz
+          tar -xzf allure.tgz -C $HOME
+          mv $HOME/allure-${{ env.ALLURE_VERSION }} $HOME/allure
+          echo "$HOME/allure/bin" >> $GITHUB_PATH
+
+      - name: Run API Tests
+        run: |
+          mvn test \
+            -Dcucumber.filter.tags="@api and not @skip" \
+            -Denvironment=STAGING \
+            -Dorg.slf4j.simpleLogger.defaultLogLevel=INFO \
+            -B
+        continue-on-error: true
+
+      - name: Upload API Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-reports
+          path: |
+            allure-report/
+            target/cucumber-reports/
+            target/logs/
+          retention-days: 30
+
+  # ============================================================
+  # Load Tests Job
+  # ============================================================
+  load-tests:
+    name: Load Tests - JMeter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Install JMeter
+        run: |
+          curl -sLo jmeter.tgz https://downloads.apache.org/jmeter/binaries/apache-jmeter-5.6.3.tgz
+          tar -xzf jmeter.tgz -C $HOME
+          echo "$HOME/apache-jmeter-5.6.3/bin" >> $GITHUB_PATH
+
+      - name: Run Load Tests
+        run: |
+          mkdir -p load-tests/results load-tests/html-report
+          jmeter -n \
+            -t load-tests/n11_search_load_test.jmx \
+            -l load-tests/results/results.jtl \
+            -e -o load-tests/html-report
+        continue-on-error: true
+
+      - name: Upload Load Test Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: load-test-reports
+          path: load-tests/html-report/
+          retention-days: 30
+
+  # ============================================================
+  # Full Regression (main push or schedule)
+  # ============================================================
+  full-regression:
+    name: Full Regression Suite
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.ref == 'refs/heads/main'
+    needs: [ui-tests, api-tests, load-tests]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Install Allure CLI
+        run: |
+          curl -sLo allure.tgz https://github.com/allure-framework/allure2/releases/download/${{ env.ALLURE_VERSION }}/allure-${{ env.ALLURE_VERSION }}.tgz
+          tar -xzf allure.tgz -C $HOME
+          mv $HOME/allure-${{ env.ALLURE_VERSION }} $HOME/allure
+          echo "$HOME/allure/bin" >> $GITHUB_PATH
+
+      - name: Install Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser chromium-chromedriver
+
+      - name: Install JMeter
+        run: |
+          curl -sLo jmeter.tgz https://downloads.apache.org/jmeter/binaries/apache-jmeter-5.6.3.tgz
+          tar -xzf jmeter.tgz -C $HOME
+          echo "$HOME/apache-jmeter-5.6.3/bin" >> $GITHUB_PATH
+
+      - name: Run Functional Tests
+        run: |
+          mvn test \
+            -Dcucumber.filter.tags="not @skip" \
+            -Dbrowser.type=CHROME \
+            -Dbrowser.headless=true \
+            -Denvironment=STAGING \
+            -B
+        continue-on-error: true
+
+      - name: Run Load Tests
+        run: |
+          mkdir -p load-tests/results load-tests/html-report
+          jmeter -n \
+            -t load-tests/n11_search_load_test.jmx \
+            -l load-tests/results/results.jtl \
+            -e -o load-tests/html-report
+        continue-on-error: true
+
+      - name: Upload Full Regression Reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-regression-reports
+          path: |
+            allure-report/
+            target/cucumber-reports/
+            load-tests/html-report/
+            target/screenshots/
+            target/logs/
+          retention-days: 30
+
+      - name: Publish Allure Report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+          destination_dir: reports/allure/${{ github.run_number }}

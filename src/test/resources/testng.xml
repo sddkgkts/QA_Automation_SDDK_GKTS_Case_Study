@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="INSIDER_QA_AUTOMATION_SDDK_GKTS" parallel="none">
+
+    <!-- Cucumber Test Runner -->
+    <test name="BDD Tests - Cucumber">
+        <classes>
+            <class name="com.insider.runners.CucumberTestRunner"/>
+        </classes>
+    </test>
+
+    <!-- Listeners -->
+    <listeners>
+        <listener class-name="com.insider.utils.ReportListener"/>
+    </listeners>
+
+</suite>

@@ -1,0 +1,37 @@
+# Maven build output
+target/
+
+# Allure test reports & raw results
+allure-results/
+allure-report/
+
+# Cucumber reports
+cucumber-reports/
+
+# JMeter results and reports
+load-tests/results/
+load-tests/html-report/
+jmeter.log
+*.jtl
+*.csv
+
+# Log files
+*.log
+logs/
+
+# macOS metadata
+.DS_Store
+**/.DS_Store
+
+# IntelliJ IDEA
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/shelf/
+
+# VS Code
+.vscode/
+
+# Environment & secrets
+.env
+*.env
+config.local.properties

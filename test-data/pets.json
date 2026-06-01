@@ -1,0 +1,25 @@
+{
+  "pets": [
+    {
+      "name": "AutoTestPet",
+      "status": "available",
+      "photoUrls": ["https://example.com/pet1.jpg"]
+    },
+    {
+      "name": "TestPet123",
+      "status": "available",
+      "photoUrls": ["https://example.com/pet2.jpg"]
+    },
+    {
+      "name": "OriginalName",
+      "status": "pending",
+      "photoUrls": ["https://example.com/pet3.jpg"]
+    },
+    {
+      "name": "DeleteMe",
+      "status": "sold",
+      "photoUrls": ["https://example.com/pet4.jpg"]
+    }
+  ],
+  "statuses": ["available", "pending", "sold"]
+}
