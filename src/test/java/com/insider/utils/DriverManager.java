@@ -11,6 +11,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.openqa.selenium.Dimension;
 import java.time.Duration;
 
 /**
@@ -71,7 +72,9 @@ public class DriverManager {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(implicitWait));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(pageLoadTimeout));
 
-        if (ConfigReader.getInstance().getPropertyAsBoolean("browser.window.maximize")) {
+        if (isHeadless()) {
+            driver.manage().window().setSize(new Dimension(1920, 1080));
+        } else if (ConfigReader.getInstance().getPropertyAsBoolean("browser.window.maximize")) {
             driver.manage().window().maximize();
         }
 
@@ -133,16 +136,21 @@ public class DriverManager {
         ChromeOptions options = new ChromeOptions();
         if (isHeadless()) {
             options.addArguments("--headless=new");
+            options.addArguments("--window-size=1920,1080");
+            options.addArguments("--force-device-scale-factor=1");
+        } else {
+            options.addArguments("--start-maximized");
         }
         options.addArguments(
-            "--start-maximized",
-            "--disable-notifications",
-            "--disable-popup-blocking",
             "--no-sandbox",
             "--disable-dev-shm-usage",
-            "--disable-gpu",
+            "--disable-notifications",
+            "--disable-popup-blocking",
+            "--disable-extensions",
+            "--disable-blink-features=AutomationControlled",
             "--remote-allow-origins=*"
         );
+        options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
         return new ChromeDriver(options);
     }
 
@@ -151,6 +159,8 @@ public class DriverManager {
         FirefoxOptions options = new FirefoxOptions();
         if (isHeadless()) {
             options.addArguments("--headless");
+            options.addArguments("--width=1920");
+            options.addArguments("--height=1080");
         }
         return new FirefoxDriver(options);
     }
@@ -160,8 +170,12 @@ public class DriverManager {
         EdgeOptions options = new EdgeOptions();
         if (isHeadless()) {
             options.addArguments("--headless=new");
+            options.addArguments("--window-size=1920,1080");
+            options.addArguments("--force-device-scale-factor=1");
+        } else {
+            options.addArguments("--start-maximized");
         }
-        options.addArguments("--start-maximized", "--no-sandbox", "--disable-dev-shm-usage");
+        options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
         return new EdgeDriver(options);
     }
 }

@@ -6,11 +6,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.insider</groupId>
-    <artifactId>insider-qa-automation-sddk-gkts</artifactId>
+    <artifactId>qa-automation-sddk-gkts-case-study</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>INSIDER_QA_AUTOMATION_SDDK_GKTS</name>
+    <name>QA_Automation_SDDK_GKTS_Case_Study</name>
     <description>Cucumber BDD + Selenium + REST Assured Test Automation Framework</description>
 
     <properties>
@@ -314,7 +314,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <projectName>Insider QA Automation - BDD</projectName>
+                            <projectName>QA_Automation_SDDK_GKTS_Case_Study - BDD</projectName>
                             <outputDirectory>target/cucumber-reports</outputDirectory>
                             <inputDirectory>target/cucumber-reports</inputDirectory>
                             <jsonFiles>

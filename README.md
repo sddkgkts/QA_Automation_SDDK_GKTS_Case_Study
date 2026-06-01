@@ -1,4 +1,4 @@
-# INSIDER_QA_AUTOMATION_SDDK_GKTS
+# QA_Automation_SDDK_GKTS_Case_Study
 
 > **Production-Ready Cucumber BDD + Selenium + REST Assured — Hooks ve Step Definitions ayrı dosyalarda**
 
