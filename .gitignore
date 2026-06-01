@@ -24,9 +24,7 @@ logs/
 **/.DS_Store
 
 # IntelliJ IDEA
-.idea/workspace.xml
-.idea/usage.statistics.xml
-.idea/shelf/
+.idea/
 
 # VS Code
 .vscode/
