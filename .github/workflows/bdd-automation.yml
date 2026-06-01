@@ -11,7 +11,6 @@ on:
 
 env:
   JAVA_VERSION: '11'
-  ALLURE_VERSION: '2.25.0'
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
@@ -33,13 +32,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Install Allure CLI
-        run: |
-          curl -sLo allure.tgz https://github.com/allure-framework/allure2/releases/download/${{ env.ALLURE_VERSION }}/allure-${{ env.ALLURE_VERSION }}.tgz
-          tar -xzf allure.tgz -C $HOME
-          mv $HOME/allure-${{ env.ALLURE_VERSION }} $HOME/allure
-          echo "$HOME/allure/bin" >> $GITHUB_PATH
-
       - name: Install Chrome
         run: |
           sudo apt-get update
@@ -54,6 +46,7 @@ jobs:
             -Dbrowser.headless=true \
             -Dbrowser.explicit.wait=20 \
             -Dbrowser.page.load.timeout=60 \
+            -Dallure.results.directory=allure-results \
             -Denvironment=STAGING \
             -Dorg.slf4j.simpleLogger.defaultLogLevel=INFO \
             -B
@@ -61,13 +54,8 @@ jobs:
 
       - name: Generate Allure Report
         if: always()
-        run: |
-          if [ -d "allure-results" ] && [ "$(ls -A allure-results 2>/dev/null)" ]; then
-            echo "allure-results found, generating report..."
-            allure generate allure-results -o allure-report --clean
-          else
-            echo "allure-results is empty or missing — skipping report generation"
-          fi
+        run: mvn allure:report -B
+        continue-on-error: true
 
       - name: Upload UI Test Reports
         if: always()
@@ -100,17 +88,11 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Install Allure CLI
-        run: |
-          curl -sLo allure.tgz https://github.com/allure-framework/allure2/releases/download/${{ env.ALLURE_VERSION }}/allure-${{ env.ALLURE_VERSION }}.tgz
-          tar -xzf allure.tgz -C $HOME
-          mv $HOME/allure-${{ env.ALLURE_VERSION }} $HOME/allure
-          echo "$HOME/allure/bin" >> $GITHUB_PATH
-
       - name: Run API Tests
         run: |
           mvn test \
             -Dcucumber.filter.tags="@api and not @skip" \
+            -Dallure.results.directory=allure-results \
             -Denvironment=STAGING \
             -Dorg.slf4j.simpleLogger.defaultLogLevel=INFO \
             -B
@@ -118,13 +100,8 @@ jobs:
 
       - name: Generate Allure Report
         if: always()
-        run: |
-          if [ -d "allure-results" ] && [ "$(ls -A allure-results 2>/dev/null)" ]; then
-            echo "allure-results found, generating report..."
-            allure generate allure-results -o allure-report --clean
-          else
-            echo "allure-results is empty or missing — skipping report generation"
-          fi
+        run: mvn allure:report -B
+        continue-on-error: true
 
       - name: Upload API Test Reports
         if: always()
@@ -201,13 +178,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Install Allure CLI
-        run: |
-          curl -sLo allure.tgz https://github.com/allure-framework/allure2/releases/download/${{ env.ALLURE_VERSION }}/allure-${{ env.ALLURE_VERSION }}.tgz
-          tar -xzf allure.tgz -C $HOME
-          mv $HOME/allure-${{ env.ALLURE_VERSION }} $HOME/allure
-          echo "$HOME/allure/bin" >> $GITHUB_PATH
-
       - name: Install Chrome
         run: |
           sudo apt-get update
@@ -227,6 +197,7 @@ jobs:
             -Dbrowser.headless=true \
             -Dbrowser.explicit.wait=20 \
             -Dbrowser.page.load.timeout=60 \
+            -Dallure.results.directory=allure-results \
             -Denvironment=STAGING \
             -B
         continue-on-error: true
@@ -242,13 +213,8 @@ jobs:
 
       - name: Generate Allure Report
         if: always()
-        run: |
-          if [ -d "allure-results" ] && [ "$(ls -A allure-results 2>/dev/null)" ]; then
-            echo "allure-results found, generating report..."
-            allure generate allure-results -o allure-report --clean
-          else
-            echo "allure-results is empty or missing — skipping report generation"
-          fi
+        run: mvn allure:report -B
+        continue-on-error: true
 
       - name: Upload Full Regression Reports
         if: always()
