@@ -59,12 +59,23 @@ jobs:
             -B
         continue-on-error: true
 
+      - name: Generate Allure Report
+        if: always()
+        run: |
+          if [ -d "allure-results" ] && [ "$(ls -A allure-results 2>/dev/null)" ]; then
+            echo "allure-results found, generating report..."
+            allure generate allure-results -o allure-report --clean
+          else
+            echo "allure-results is empty or missing — skipping report generation"
+          fi
+
       - name: Upload UI Test Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ui-test-reports
           path: |
+            allure-results/
             allure-report/
             target/cucumber-reports/
             target/logs/
@@ -105,12 +116,23 @@ jobs:
             -B
         continue-on-error: true
 
+      - name: Generate Allure Report
+        if: always()
+        run: |
+          if [ -d "allure-results" ] && [ "$(ls -A allure-results 2>/dev/null)" ]; then
+            echo "allure-results found, generating report..."
+            allure generate allure-results -o allure-report --clean
+          else
+            echo "allure-results is empty or missing — skipping report generation"
+          fi
+
       - name: Upload API Test Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: api-test-reports
           path: |
+            allure-results/
             allure-report/
             target/cucumber-reports/
             target/logs/
@@ -218,12 +240,23 @@ jobs:
             -e -o load-tests/html-report
         continue-on-error: true
 
+      - name: Generate Allure Report
+        if: always()
+        run: |
+          if [ -d "allure-results" ] && [ "$(ls -A allure-results 2>/dev/null)" ]; then
+            echo "allure-results found, generating report..."
+            allure generate allure-results -o allure-report --clean
+          else
+            echo "allure-results is empty or missing — skipping report generation"
+          fi
+
       - name: Upload Full Regression Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: full-regression-reports
           path: |
+            allure-results/
             allure-report/
             target/cucumber-reports/
             load-tests/html-report/
