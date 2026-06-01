@@ -245,31 +245,13 @@
                 </dependencies>
             </plugin>
 
-            <!-- ─── Open Allure Report after tests ─────────────── -->
+            <!-- ─── Open Allure Report after tests (local only, CI uses mvn allure:report) ─── -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.1</version>
                 <executions>
-                    <!-- Step 1: generate static HTML from allure-results -->
-                    <execution>
-                        <id>allure-generate</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>allure</executable>
-                            <arguments>
-                                <argument>generate</argument>
-                                <argument>${project.basedir}/allure-results</argument>
-                                <argument>-o</argument>
-                                <argument>${project.basedir}/allure-report</argument>
-                                <argument>--clean</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <!-- Step 2: serve and open browser (skipped in CI) -->
+                    <!-- Generate + serve report locally; skipped entirely in CI -->
                     <execution>
                         <id>allure-open</id>
                         <phase>test</phase>
@@ -280,7 +262,7 @@
                             <executable>sh</executable>
                             <arguments>
                                 <argument>-c</argument>
-                                <argument>[ -z "$CI" ] &amp;&amp; { lsof -ti:8090 | xargs kill -9 2>/dev/null; python3 -m http.server 8090 --directory '${project.basedir}/allure-report' &amp; sleep 2 &amp;&amp; open http://localhost:8090; }; exit 0</argument>
+                                <argument>[ -z "$CI" ] &amp;&amp; { command -v allure &gt;/dev/null 2&gt;&amp;1 &amp;&amp; allure generate '${project.basedir}/allure-results' -o '${project.basedir}/allure-report' --clean 2&gt;/dev/null; lsof -ti:8090 | xargs kill -9 2&gt;/dev/null; python3 -m http.server 8090 --directory '${project.basedir}/allure-report' &amp; sleep 2 &amp;&amp; open http://localhost:8090; }; exit 0</argument>
                             </arguments>
                         </configuration>
                     </execution>
