@@ -295,7 +295,6 @@
                 <configuration>
                     <reportVersion>2.25.0</reportVersion>
                     <resultsDirectory>${project.basedir}/allure-results</resultsDirectory>
-                    <outputDirectory>${project.basedir}/allure-report</outputDirectory>
                 </configuration>
             </plugin>
 

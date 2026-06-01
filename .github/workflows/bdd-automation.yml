@@ -64,7 +64,7 @@ jobs:
           name: ui-test-reports
           path: |
             allure-results/
-            allure-report/
+            target/site/allure-maven-plugin/
             target/cucumber-reports/
             target/logs/
             target/screenshots/
@@ -110,7 +110,7 @@ jobs:
           name: api-test-reports
           path: |
             allure-results/
-            allure-report/
+            target/site/allure-maven-plugin/
             target/cucumber-reports/
             target/logs/
           retention-days: 30
@@ -223,7 +223,7 @@ jobs:
           name: full-regression-reports
           path: |
             allure-results/
-            allure-report/
+            target/site/allure-maven-plugin/
             target/cucumber-reports/
             load-tests/html-report/
             target/screenshots/
@@ -235,5 +235,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure-report
+          publish_dir: target/site/allure-maven-plugin
           destination_dir: reports/allure/${{ github.run_number }}
+          force_orphan: false
+          keep_files: true
